@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GameInfo
 {
     private static int score = 0;
-    private static bool scanning = false;
+    private static bool scanning = true;
 
     public static int Score
     {
@@ -18,6 +18,4 @@ public static class GameInfo
         get { return scanning; }
         set { scanning = value; }
     }
-
-
 }
