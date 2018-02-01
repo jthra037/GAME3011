@@ -26,7 +26,7 @@ public class BoardGenerator : MonoBehaviour {
         {
             for (int j = 0; j < width; j++)
             {
-                CreateTile(i, j, k++);
+                CreateTile(j, i, k++);
             }
         }
 
@@ -44,6 +44,11 @@ public class BoardGenerator : MonoBehaviour {
         {
             tile.SetNeighbor(Directions.west, tiles[count - 1]);
         }
+        if (y > 0)
+        {
+            tile.SetNeighbor(Directions.south, tiles[count - width]);
+        }
+
         Vector2 position = new Vector2(x * tile.rectTransform.sizeDelta.x, y * tile.rectTransform.sizeDelta.x);
         tile.rectTransform.anchoredPosition = position;
 
