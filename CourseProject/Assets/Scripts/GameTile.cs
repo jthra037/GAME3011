@@ -41,6 +41,11 @@ public static class TileModeExtensions
     {
         return mode > 0 ? mode - 1 : 0;
     }
+
+    public static TileMode Greater(this TileMode mode, TileMode other)
+    {
+        return mode > other ? mode : other;
+    }
 }
 
 // Info held within each tile
@@ -103,11 +108,6 @@ public class GameTile : MonoBehaviour {
         rectTransform = GetComponent<RectTransform>();
     }
 
-    //private void Start()
-    //{
-    //    image.color = Info.color;
-    //}
-
     public void TileActivation()
     {
         if (GameInfo.Scanning)
@@ -124,11 +124,12 @@ public class GameTile : MonoBehaviour {
                 }
             }
         } 
-        else
+        else if (!GameInfo.Scanning && GameInfo.CanExtract)
         {
             isScanned = true;
             UpdateImage();
             GameInfo.Score += Info.value;
+            GameInfo.Extractions--;
 
             foreach(GameTile tile in neighbors)
             {

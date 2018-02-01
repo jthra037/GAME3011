@@ -88,9 +88,10 @@ public class BoardGenerator : MonoBehaviour {
                 if (tiles.Length == 0)
                 { return; }
 
-                tiles[Mathf.Clamp(index + i + (j * width),
+                GameTile tile = tiles[Mathf.Clamp(index + i + (j * width),
                     0,
-                    tiles.Length-1)].Mode = TileMode.quarter;
+                    tiles.Length - 1)];
+                tile.Mode = tile.Mode.Greater(TileMode.quarter);
             }
         }
 
@@ -99,9 +100,10 @@ public class BoardGenerator : MonoBehaviour {
         {
             for (int j = -1; j <= 1; j++)
             {
-                tiles[Mathf.Clamp(index + i + (j * width),
+                GameTile tile = tiles[Mathf.Clamp(index + i + (j * width),
                     0,
-                    tiles.Length-1)].Mode = TileMode.half;
+                    tiles.Length - 1)];
+                tile.Mode = tile.Mode.Greater(TileMode.half);
             }
         }
 
