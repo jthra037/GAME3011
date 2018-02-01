@@ -3,22 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Possible directions for tile placement
 public enum Directions
 {
-    north,
-    east,
-    south,
-    west
+    north, //0
+    northeast, //1
+    east, //2
+    southeast, //3
+    south, //4
+    southwest, //5
+    west, //6
+    northwest, //7
 }
 
+// Extensions to the functionality of Directions enum
 public static class DirectionExtensions
 {
     public static Directions Opposite(this Directions direction)
     {
-        return (int)direction < 2 ? (direction + 2) : (direction - 2);
+        return (int)direction < 4 ? (direction + 4) : (direction - 4);
     }
 }
 
+
+// Possible modes for Tiles
 public enum TileMode
 {
     minimal,
@@ -26,7 +34,16 @@ public enum TileMode
     half,
     maximum
 }
+// Extensions to the functionality of Directions enum
+public static class TileModeExtensions
+{
+    public static TileMode Reduce(this TileMode mode)
+    {
+        return mode > 0 ? mode - 1 : 0;
+    }
+}
 
+// Info held within each tile
 public class TileInfo
 {
     public Color color = Color.gray;
@@ -55,11 +72,13 @@ public class TileInfo
 
 [RequireComponent(typeof(Image), typeof(Button), typeof(RectTransform))]
 public class GameTile : MonoBehaviour {
+
     public bool isScanned = false;
     public TileInfo Info = new TileInfo();
     public RectTransform rectTransform;
 
 
+    // public property allows us to, when Mode is changed, also update Info
     public TileMode Mode
     {
         get { return mode; }
@@ -74,8 +93,8 @@ public class GameTile : MonoBehaviour {
     private TileMode mode;
     private Image image;
     private Button button;
-    [SerializeField]
-    private GameTile[] neighbors = new GameTile[4];
+    //[SerializeField]
+    private GameTile[] neighbors = new GameTile[8];
 
     private void Awake()
     {
@@ -84,26 +103,53 @@ public class GameTile : MonoBehaviour {
         rectTransform = GetComponent<RectTransform>();
     }
 
-    private void Start()
-    {
-        image.color = Info.color;
-    }
+    //private void Start()
+    //{
+    //    image.color = Info.color;
+    //}
 
     public void TileActivation()
     {
-
         if (GameInfo.Scanning)
         {
-
+            GameInfo.Scans--;
+            isScanned = true;
+            UpdateImage();
+            foreach(GameTile tile in neighbors)
+            {
+                if (tile != null)
+                {
+                    tile.isScanned = true;
+                    tile.UpdateImage();
+                }
+            }
         } 
         else
         {
-            image.color = Info.color;
+            isScanned = true;
+            UpdateImage();
             GameInfo.Score += Info.value;
 
-            Mode = TileMode.minimal;
+            foreach(GameTile tile in neighbors)
+            {
+                if (tile != null)
+                {
+                    tile.Mode = tile.Mode.Reduce();
+                    tile.UpdateImage();
+                }
+            }
 
+            Mode = TileMode.minimal;
+            UpdateImage();
             Debug.Log(GameInfo.Score);
+        }
+    }
+
+    private void UpdateImage()
+    {
+        if (isScanned)
+        {
+            image.color = Info.color;
         }
     }
 

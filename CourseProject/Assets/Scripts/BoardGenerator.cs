@@ -18,8 +18,9 @@ public class BoardGenerator : MonoBehaviour {
     {
         tiles = new GameTile[height * width];
 
+        // Large and possibly incorrect assignment which is supposed to move the board to be centred in the screen as it's made
         GetComponent<RectTransform>().anchoredPosition = new Vector2(
-            -width * tilePrefab.GetComponent<RectTransform>().sizeDelta.x / 2,
+            -width * tilePrefab.GetComponent<RectTransform>().sizeDelta.x / 2 + 100,
             tilePrefab.GetComponent<RectTransform>().sizeDelta.y / 2);
 
         for (int i = 0, k = 0; i < height; i++)
@@ -37,25 +38,46 @@ public class BoardGenerator : MonoBehaviour {
 
     }
 
-    private void CreateTile(int x, int y, int count)
+    /// <summary>
+    /// Creates a gameTile and adds it to tiles[]
+    /// </summary>
+    /// <param name="x">X placement of tile in board</param>
+    /// <param name="y">Y placement of tile in board</param>
+    /// <param name="i">Index of tile in tiles[]</param>
+    private void CreateTile(int x, int y, int i)
     {
         GameTile tile = Instantiate(tilePrefab, transform);
         if (x > 0)
         {
-            tile.SetNeighbor(Directions.west, tiles[count - 1]);
+            tile.SetNeighbor(Directions.west, tiles[i - 1]);
+
+            if (y > 0)
+            {
+                tile.SetNeighbor(Directions.southwest, tiles[i - 1 - width]);
+            }
         }
         if (y > 0)
         {
-            tile.SetNeighbor(Directions.south, tiles[count - width]);
+            tile.SetNeighbor(Directions.south, tiles[i - width]);
+
+            if (x < width - 1)
+            {
+                tile.SetNeighbor(Directions.southeast, tiles[i + 1 - width]);
+            }
         }
 
         Vector2 position = new Vector2(x * tile.rectTransform.sizeDelta.x, y * tile.rectTransform.sizeDelta.x);
         tile.rectTransform.anchoredPosition = position;
 
-        tiles[count] = tile;
+        tiles[i] = tile;
 
     }
 
+    /// <summary>
+    /// Really not optimized in any way, but makes the square surrounding
+    /// a randomly chosen tile out of increased value tiles.
+    /// </summary>
+    /// <param name="index">Index of the randomly chosen centre tile in the flat tiles[]</param>
     private void MakeMaxValue(int index)
     {
         // Make 25 tiles centred on index into quarter power
@@ -88,6 +110,9 @@ public class BoardGenerator : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Changes the scanning boolean in the info class
+    /// </summary>
     public void ToggleScanMode()
     {
         GameInfo.Scanning = !GameInfo.Scanning;
