@@ -6,9 +6,7 @@ public class BoardGenerator : MonoBehaviour {
     [SerializeField]
     private GameTile tilePrefab;
     [SerializeField]
-    private int height = 9;
-    [SerializeField]
-    private int width = 9;
+    private int size = 9;
     [SerializeField]
     private int numberOfStarts = 8;
 
@@ -16,16 +14,23 @@ public class BoardGenerator : MonoBehaviour {
 
     private void Awake()
     {
-        tiles = new GameTile[height * width];
+        int pixelRealEstate = (int)(tilePrefab.GetComponent<RectTransform>().sizeDelta.y * size);
+        if (Screen.height < pixelRealEstate)
+        {
+            size = Screen.height / (int)tilePrefab.GetComponent<RectTransform>().sizeDelta.y;
+            //size = size;
+        }
+
+        tiles = new GameTile[size * size];
 
         // Large and possibly incorrect assignment which is supposed to move the board to be centred in the screen as it's made
         GetComponent<RectTransform>().anchoredPosition = new Vector2(
-            -width * tilePrefab.GetComponent<RectTransform>().sizeDelta.x / 2 + 100,
-            tilePrefab.GetComponent<RectTransform>().sizeDelta.y / 2);
+            -size * tilePrefab.GetComponent<RectTransform>().sizeDelta.x / 2,
+            -size * tilePrefab.GetComponent<RectTransform>().sizeDelta.y / 2);
 
-        for (int i = 0, k = 0; i < height; i++)
+        for (int i = 0, k = 0; i < size; i++)
         {
-            for (int j = 0; j < width; j++)
+            for (int j = 0; j < size; j++)
             {
                 CreateTile(j, i, k++);
             }
@@ -53,16 +58,16 @@ public class BoardGenerator : MonoBehaviour {
 
             if (y > 0)
             {
-                tile.SetNeighbor(Directions.southwest, tiles[i - 1 - width]);
+                tile.SetNeighbor(Directions.southwest, tiles[i - 1 - size]);
             }
         }
         if (y > 0)
         {
-            tile.SetNeighbor(Directions.south, tiles[i - width]);
+            tile.SetNeighbor(Directions.south, tiles[i - size]);
 
-            if (x < width - 1)
+            if (x < size - 1)
             {
-                tile.SetNeighbor(Directions.southeast, tiles[i + 1 - width]);
+                tile.SetNeighbor(Directions.southeast, tiles[i + 1 - size]);
             }
         }
 
@@ -88,7 +93,7 @@ public class BoardGenerator : MonoBehaviour {
                 if (tiles.Length == 0)
                 { return; }
 
-                GameTile tile = tiles[Mathf.Clamp(index + i + (j * width),
+                GameTile tile = tiles[Mathf.Clamp(index + i + (j * size),
                     0,
                     tiles.Length - 1)];
                 tile.Mode = tile.Mode.Greater(TileMode.quarter);
@@ -100,7 +105,7 @@ public class BoardGenerator : MonoBehaviour {
         {
             for (int j = -1; j <= 1; j++)
             {
-                GameTile tile = tiles[Mathf.Clamp(index + i + (j * width),
+                GameTile tile = tiles[Mathf.Clamp(index + i + (j * size),
                     0,
                     tiles.Length - 1)];
                 tile.Mode = tile.Mode.Greater(TileMode.half);
