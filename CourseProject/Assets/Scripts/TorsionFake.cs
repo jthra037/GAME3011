@@ -19,6 +19,6 @@ public class TorsionFake : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-        rb.AddForce(transform.right * movemementScale * sliderRef.value * Time.fixedDeltaTime);
+        rb.AddForce(transform.right * movemementScale * sliderRef.value);
 	}
 }
