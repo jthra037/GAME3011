@@ -11,6 +11,9 @@ public static class GameInfo
     private static bool scanning = true;
     private static bool canExtract = true;
 
+    public delegate void EndGame();
+    public static event EndGame GameOver;
+
     private static string[] tips =
     {
         "You can use the toggle at the top left to switch between extraction and scan mode.",                   //0
@@ -77,5 +80,12 @@ public static class GameInfo
         set { tipIndex = Mathf.Clamp(value, tipIndex, tips.Length-1); }
     }
 
+    public static void EndTheGame()
+    {
+        if (GameOver != null)
+        {
+            GameOver();
+        }
+    }
 
 }
