@@ -19,6 +19,8 @@ public class PinSpawner : MonoBehaviour
     {
         widths = new float[spawnPoints.Length];
 
+        tolerance = LockpickInfo.Tolerance;
+
         foreach(Transform point in spawnPoints)
         {
             Randomize(Instantiate(pinTumblerPrefab, point.position, point.rotation));
