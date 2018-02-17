@@ -14,9 +14,17 @@ public class PickController : MonoBehaviour {
     {
         rb = GetComponent<Rigidbody>();
     }
-	
-	// Update is called once per frame
-	void FixedUpdate ()
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            LockpickInfo.LoadNextScene();
+        }
+    }
+
+    // Update is called once per frame
+    void FixedUpdate ()
     {
         Debug.Log(Input.GetAxis("Vertical"));
 

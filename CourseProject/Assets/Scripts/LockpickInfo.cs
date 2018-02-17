@@ -21,6 +21,12 @@ public static class LockpickInfo
         }
     }
 
+    public static int GameTime
+    {
+        get { return 120 + ((int)Difficulty * 30); }
+    }
+
+
     public static void LoadSceneByIndex(int idx)
     {
         SceneManager.LoadScene(idx);
